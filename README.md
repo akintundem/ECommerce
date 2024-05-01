@@ -40,18 +40,17 @@ Our e-commerce platform aims to revolutionize online shopping by providing a sea
         - Users should receive confirmation of successful account updates.
     - **Dev Task:** Implement user profile management functionality with form validation and real-time updates.
 
-## Feature 2: User Authentication
+## Feature 2: Product Listing
 
-## Feature 3: User Authentication
+## Feature 3: Shopping Cart
 
-## Feature 4: User Authentication
+## Feature 4: Checkout Process
 
-## Feature 5: User Authentication
+## Feature 5: Order Management
 
-## Feature 6: User Authentication
+## Feature 6: Search and Filtering
 
-## Feature 7: User Authentication
+## Feature 7: Payment Integration
 
-## Feature 8: User Authentication
+## Feature 8: Push Notifications
 
-## Feature 9: User Authentication
