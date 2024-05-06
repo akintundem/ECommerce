@@ -1,0 +1,195 @@
+{
+"categories":["Image","Video","Audio","Other"],
+"products":[
+    {
+        "product_id": 2,
+        "title": "Taylor Swift Love Story",
+        "description": "Popular country-pop song by Taylor Swift",
+        "category_id": 1,
+        "price": 1.29,
+        "stock_quantity": 150,
+        "file_path": "music/taylor_swift_love_story.mp3",
+        "file_type": "mp3",
+        "duration": 235,
+        "created_at": "2022-01-01T00:00:00Z",
+        "updated_at": "2022-01-01T00:00:00Z",
+        "is_active": true,
+        "tags": "taylor swift, country, pop, music"
+    
+    },
+    {
+        "product_id": 3,
+        "title": "iPhone 13 Pro",
+        "description": "Latest flagship smartphone from Apple",
+        "category_id": 1,
+        "price": 999.99,
+        "stock_quantity": 50,
+        "file_path": "images/iphone_13_pro.jpg",
+        "file_type": "jpg",
+        "created_at": "2022-01-01T00:00:00Z",
+        "updated_at": "2022-01-01T00:00:00Z",
+        "is_active": true,
+        "tags": "iphone, smartphone, apple"
+    },
+    {
+        "product_id": 4,
+        "title": "Samsung Galaxy S21",
+        "description": "High-end Android smartphone from Samsung",
+        "category_id": 1,
+        "price": 899.99,
+        "stock_quantity": 100,
+        "file_path": "images/samsung_galaxy_s21.jpg",
+        "file_type": "jpg",
+        "created_at": "2022-01-01T00:00:00Z",
+        "updated_at": "2022-01-01T00:00:00Z",
+        "is_active": true,
+        "tags": "samsung, smartphone, android"
+    },
+    {
+        "product_id": 5,
+        "title": "Sony PlayStation 5",
+        "description": "Next-generation gaming console from Sony",
+        "category_id": 2,
+        "price": 499.99,
+        "stock_quantity": 200,
+        "file_path": "images/sony_playstation_5.jpg",
+        "file_type": "jpg",
+        "created_at": "2022-01-01T00:00:00Z",
+        "updated_at": "2022-01-01T00:00:00Z",
+        "is_active": true,
+        "tags": "sony, playstation, gaming"
+    },
+    {
+        "product_id": 6,
+        "title": "Nintendo Switch",
+        "description": "Hybrid gaming console from Nintendo",
+        "category_id": 2,
+        "price": 299.99,
+        "stock_quantity": 150,
+        "file_path": "images/nintendo_switch.jpg",
+        "file_type": "jpg",
+        "created_at": "2022-01-01T00:00:00Z",
+        "updated_at": "2022-01-01T00:00:00Z",
+        "is_active": true,
+        "tags": "nintendo, switch, gaming"
+    },
+    {
+        "product_id": 7,
+        "title": "Bose QuietComfort 35 II",
+        "description": "Wireless noise-canceling headphones",
+        "category_id": 3,
+        "price": 299.99,
+        "stock_quantity": 100,
+        "file_path": "images/bose_quietcomfort_35_ii.jpg",
+        "file_type": "jpg",
+        "created_at": "2022-01-01T00:00:00Z",
+        "updated_at": "2022-01-01T00:00:00Z",
+        "is_active": true,
+        "tags": "bose, headphones, audio"
+    },
+    {
+        "product_id": 8,
+        "title": "Apple AirPods Pro",
+        "description": "Wireless earbuds with active noise cancellation",
+        "category_id": 3,
+        "price": 249.99,
+        "stock_quantity": 200,
+        "file_path": "images/apple_airpods_pro.jpg",
+        "file_type": "jpg",
+        "created_at": "2022-01-01T00:00:00Z",
+        "updated_at": "2022-01-01T00:00:00Z",
+        "is_active": true,
+        "tags": "apple, airpods, audio"
+    },
+    {
+        "product_id": 9,
+        "title": "Canon EOS R5",
+        "description": "Professional mirrorless camera",
+        "category_id": 4,
+        "price": 3799.99,
+        "stock_quantity": 50,
+        "file_path": "images/canon_eos_r5.jpg",
+        "file_type": "jpg",
+        "created_at": "2022-01-01T00:00:00Z",
+        "updated_at": "2022-01-01T00:00:00Z",
+        "is_active": true,
+        "tags": "canon, camera, photography"
+    },
+    {
+        "product_id": 10,
+        "title": "DJI Mavic Air 2",
+        "description": "Compact drone for aerial photography",
+        "category_id": 4,
+        "price": 799.99,
+        "stock_quantity": 100,
+        "file_path": "images/dji_mavic_air_2.jpg",
+        "file_type": "jpg",
+        "created_at": "2022-01-01T00:00:00Z",
+        "updated_at": "2022-01-01T00:00:00Z",
+        "is_active": true,
+        "tags": "dji, drone, photography"
+    },
+    {
+        "product_id": 11,
+        "title": "Amazon Echo Dot",
+        "description": "Smart speaker with Alexa voice assistant",
+        "category_id": 5,
+        "price": 49.99,
+        "stock_quantity": 200,
+        "file_path": "images/amazon_echo_dot.jpg",
+        "file_type": "jpg",
+        "created_at": "2022-01-01T00:00:00Z",
+        "updated_at": "2022-01-01T00:00:00Z",
+        "is_active": true,
+        "tags": "amazon, echo, smart speaker"
+    },
+    {
+        "product_id": 12,
+        "title": "Google Nest Hub",
+        "description": "Smart display with Google Assistant",
+        "category_id": 5,
+        "price": 99.99,
+        "stock_quantity": 150,
+        "file_path": "images/google_nest_hub.jpg",
+        "file_type": "jpg",
+        "created_at": "2022-01-01T00:00:00Z",
+        "updated_at": "2022-01-01T00:00:00Z",
+        "is_active": true,
+        "tags": "google, nest, smart display"
+    }
+],
+"paymentmethods":[
+    {
+        "payment_method_id": 1,
+        "title": "Credit Card",
+        "description": "Pay with your credit card"
+    },
+    {
+        "payment_method_id": 2,
+        "title": "Paypal",
+        "description": "Pay with your paypal account"
+    },
+    {
+        "payment_method_id": 3,
+        "title": "Bitcoin",
+        "description": "Pay with your bitcoin wallet"
+    }
+],
+"shippingmethods": [
+    {
+        "shipping_method_id": 1,
+        "title": "Standard Shipping",
+        "description": "Standard shipping"
+    },
+    {
+        "shipping_method_id": 2,
+        "title": "Express Shipping",
+        "description": "Express shipping"
+    },
+    {
+        "shipping_method_id": 3,
+        "title": "Pickup",
+        "description": "Pickup at store"
+    }
+]
+}

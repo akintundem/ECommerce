@@ -1,4 +1,6 @@
 import json
+import base64
+
 from UserAuth.StubUser import StubUserRepository
 from UserAuth.UserAuth import UserAuth
 
@@ -41,6 +43,32 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     'message': message
                 }
             self.write_message(json.dumps(response))
+
+        elif action == 'request_song':
+            # Handle song request logic here
+            message = data.get('message')
+            song_name = message.get('song_name')
+            artist_name = message.get('artist_name')
+            request_id = message.get('request_id')
+            song_path = 'Lojay-Ft-Sarz-Monalisa-1-(TrendyBeatz.com).mp3'
+            with open(song_path, 'rb') as file:
+                song_data = file.read()
+            
+            song_data_base64 = base64.b64encode(song_data).decode('utf-8')
+
+            response = {
+                'status': 'success',
+                'message': {
+                    'song_name': song_name,
+                    'artist_name': artist_name,
+                    'request_id': request_id,
+                    'songdata': song_data_base64,
+                }
+            }
+            try:
+                self.write_message(json.dumps(response))
+            except tornado.websocket.WebSocketClosedError:
+                print("WebSocket connection closed before sending message")
 
         elif action == 'login':
             # Handle login logic here
