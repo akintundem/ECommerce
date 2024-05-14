@@ -1,10 +1,10 @@
 
 import json
-import base64
 import boto3
 from botocore.exceptions import ClientError
 from UserAuth.StubUser import StubUserRepository
 from UserAuth.UserAuth import UserAuth
+from db.db import DatabaseManager
 import configparser
 
 import tornado.ioloop
@@ -16,6 +16,9 @@ config.read('cognito_cred.config')
 
 user_storage = StubUserRepository()
 user_auth = UserAuth()
+
+config_file = 'db/db_cred.json' 
+db_manager = DatabaseManager(config_file)
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def open(self):
@@ -37,6 +40,26 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 response = {
                     'status': 'success',
                     'message': 'Song requested'
+                }
+                self.write_message(json.dumps(response))
+            elif action == 'get_products':
+                # Get the products to display on the home page
+                products = db_manager.get_products()  # Replace with your logic to retrieve products from the database
+                response = {
+                    'status': 'success',
+                    'message': 'Products retrieved',
+                    'products': products
+                }
+                self.write_message(json.dumps(response))
+
+            elif action == 'search' and data.get('searchType') == 'category':
+                # Search for products by category
+                category = data.get('category')
+                products = db_manager.search_products_by_category(category)  # Replace with your logic to search products by category in the database
+                response = {
+                    'status': 'success',
+                    'message': 'Products retrieved',
+                    'products': products
                 }
                 self.write_message(json.dumps(response))
         else: 
