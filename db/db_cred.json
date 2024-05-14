@@ -1,0 +1,8 @@
+{
+    "server": "localhost,1433",
+    "database": "AMAZON",
+    "user": "sa",
+    "password": "Iamayokakfwesh1.",
+    "driver": "{ODBC Driver 17 for SQL Server}"
+  }
+  
