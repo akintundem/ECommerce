@@ -74,9 +74,50 @@ Our e-commerce platform aims to revolutionize online shopping by providing a sea
 
 
 ## Feature 3: Shopping Cart
+### User Stories
+1. **Add Items to Cart**
+    - As a user, I want to be able to add items to my shopping cart, so I can keep track of the products I intend to purchase.
+    - **Acceptance Criteria:**
+        - Users should be able to add products to their cart from the product listing page or the product details page.
+        - The cart should display the added items with their name, price, and quantity.
+        - Users should have the option to adjust the quantity of each item in the cart.
+    - **Dev Task:** Implement functionality to add items to the shopping cart and display them with their details and quantity.
+
+2. **Remove Items from Cart**
+    - As a user, I want to be able to remove items from my shopping cart, so I can modify my purchase before proceeding to checkout.
+    - **Acceptance Criteria:**
+        - Users should have the option to remove items from their cart.
+        - The cart should update dynamically to reflect the changes in the item quantity or removal.
+    - **Dev Task:** Implement functionality to remove items from the shopping cart and update the cart display accordingly.
+
+3. **Update Cart Quantity**
+    - As a user, I want to be able to update the quantity of items in my shopping cart, so I can adjust my purchase as needed.
+    - **Acceptance Criteria:**
+        - Users should have the option to update the quantity of each item in the cart.
+        - The cart should update dynamically to reflect the changes in the item quantity.
+    - **Dev Task:** Implement functionality to update the quantity of items in the shopping cart and update the cart display accordingly.
+
+4. **View Cart**
+
+    - As a user, I want to be able to view the contents of my shopping cart, so I can review my selected items before proceeding to checkout.
+    - **Acceptance Criteria:**
+        - Users should have access to a dedicated cart page where they can view the added items.
+        - The cart page should display the items with their details, quantity, and total price.
+    - **Dev Task:** Implement functionality to display the contents of the shopping cart on a dedicated cart page.
+
+5. **Empty Cart**
+
+
+    - As a user, I want to be able to empty my shopping cart, so I can start fresh with my selections.
+    - **Acceptance Criteria:**
+        - Users should have the option to empty their cart, removing all items from it.
+        - The cart should update dynamically to reflect the removal of all items.
+    - **Dev Task:** Implement functionality to empty the shopping cart and update the cart display accordingly.
 
 ## Feature 4: Checkout Process
 
 ## Feature 7: Payment Integration
+
+
 
 

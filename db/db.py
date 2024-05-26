@@ -32,6 +32,9 @@ class DatabaseManager:
         cursor = conn.cursor()
         return conn, cursor
     
+    def get_connection(self):
+        return self.conn
+
     def get_cursor(self):
             return self.cursor
     
@@ -43,6 +46,8 @@ class DatabaseManager:
             'DROP TABLE IF EXISTS Reviews;',
             'DROP TABLE IF EXISTS OrderItems;',
             'DROP TABLE IF EXISTS Orders;',
+            'DROP TABLE IF EXISTS UserCart;',
+            'DROP TABLE IF EXISTS ShoppingCart;',
             'DROP TABLE IF EXISTS Users;',
             'DROP TABLE IF EXISTS ProductCategories;',
             'DROP TABLE IF EXISTS Products;',
@@ -95,6 +100,22 @@ class DatabaseManager:
                 phone_number NVARCHAR(20),
                 created_at DATETIME
             );''',
+            '''
+            CREATE TABLE UserCart (
+                cart_id INT PRIMARY KEY IDENTITY(1,1),
+                user_id INT,
+                FOREIGN KEY (user_id) REFERENCES Users(user_id),
+            );''',
+            '''
+            CREATE TABLE ShoppingCart (
+                cart_id INT,
+                product_id VARCHAR(20),
+                quantity INT,
+                PRIMARY KEY (cart_id, product_id),  
+                FOREIGN KEY (cart_id) REFERENCES UserCart(cart_id),
+                FOREIGN KEY (product_id) REFERENCES Products(product_id)
+            )
+            ''',
             '''CREATE TABLE Orders (
                 order_id INT IDENTITY(1,1) PRIMARY KEY,
                 user_id INT,
