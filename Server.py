@@ -1,122 +1,171 @@
-
 import json
-import boto3
-from botocore.exceptions import ClientError
-from UserAuth.StubUser import StubUserRepository
-from UserAuth.UserAuth import UserAuth
+from VerifyToken import TokenVerifier
+from Recommendation.Recommend import Recommendation
+from Search.SearchEngine import Search
+from Cart.Cart import Cart
+from Pay import PaymentHandler
+from flask import Flask, request
 from db.db import DatabaseManager
-import configparser
+app = Flask(__name__)
 
-import tornado.ioloop
-import tornado.web
-import tornado.websocket
 
-config = configparser.ConfigParser()
-config.read('cognito_cred.config')
 
-user_storage = StubUserRepository()
-user_auth = UserAuth()
+VerifyUser = TokenVerifier("S", "A")
 
 config_file = 'db/db_cred.json' 
-db_manager = DatabaseManager(config_file)
+datab = DatabaseManager(config_file)
+db = datab.get_cursor()
+conn = datab.get_connection()
 
-class WebSocketHandler(tornado.websocket.WebSocketHandler):
-    def open(self):
-        print("WebSocket opened")
+recommendation = Recommendation()
+search = Search()
+cart = Cart()
+pay = PaymentHandler()
 
-    def on_message(self, message):
-        data = json.loads(message)
-        token = data.get('Token')
-        access_token = token.get('accessToken')
-        id_token = token.get('idToken')
-        if self.verify_tokens(access_token, id_token):
-            # Tokens are valid, handle the action of the message
-            action = data.get('action')
-            if action == 'request_song':
-                # Request a song
-                song_name = data.get('songName')
-                song_artist = data.get('songArtist')
-                song_url = data.get('songURL')
-                response = {
-                    'status': 'success',
-                    'message': 'Song requested'
-                }
-                self.write_message(json.dumps(response))
-            elif action == 'get_products':
-                # Get the products to display on the home page
-                products = db_manager.get_products()  # Replace with your logic to retrieve products from the database
-                response = {
-                    'status': 'success',
-                    'message': 'Products retrieved',
-                    'products': products
-                }
-                self.write_message(json.dumps(response))
+@app.route('/recommend', methods=['GET'])
+def recommend():
+    token = request.headers.get('Token')
+    if VerifyUser.verify_tokens(token):
+        response = recommendation.get_recommendations(db)
+        if response:
+            return json.dumps({'message': response})
+        else:
+            response = "No recommendations"
+            return json.dumps({'message': response})
+    else:
+        response = "Invalid token"
+        return json.dumps({'message': response})
 
-            elif action == 'search' and data.get('searchType') == 'category':
-                # Search for products by category
-                category = data.get('category')
-                products = db_manager.search_products_by_category(category)  # Replace with your logic to search products by category in the database
-                response = {
-                    'status': 'success',
-                    'message': 'Products retrieved',
-                    'products': products
-                }
-                self.write_message(json.dumps(response))
-        else: 
-            # Tokens are invalid, send an error response
-            response = {
-                'status': 'error',
-                'message': 'Invalid tokens'
-            }
-            self.write_message(json.dumps(response))
-
-    def on_close(self):
-        print("WebSocket closed")
-
-    def verify_tokens(self, access_token, id_token):
-        # Replace these values with your AWS Cognito User Pool ID and AWS region
-        user_pool_id = config.get('Cognito', 'user_pool_id')
-        region = config.get('Cognito', 'region')
+@app.route('/search', methods=['POST'])
+def searchProd():
+    token = request.headers.get('Token')
+    params = request.args.get('search')
+    if VerifyUser.verify_tokens(token):
+        response = search.search_products(params,db)
+        if response:
+            return json.dumps({'message': response})
+        else:
+            response = "None"
+            return json.dumps({'message': response})
+    else:
+        response = "Invalid token"
+        return json.dumps({'message': response})
+@app.route('/cart', methods=['GET'])
+def cartView():
+    token = request.headers.get('Token')
+    if VerifyUser.verify_tokens(token):
+        userID = 1
+        response = cart.view_cart(userID,db,conn)
+        if response:
+            return json.dumps({'message': response})
+        else:
+            response = "None"
+            return json.dumps({'message': response})
+    else:
+        response = "Invalid token"
+        return json.dumps({'message': response})
+    
+@app.route('/cart', methods=['POST'])
+def cartActions():
+    token = request.headers.get('Token')
+    data = json.loads(request.data.decode('utf-8'))
+    
+    if VerifyUser.verify_tokens(token):
+        action = data.get('action')
+        userID = 1
+        # Handle different actions
+        # Add: Add a product to the cart{
+        # "action": "add",
+        # "product_id": "B097JVLW3L",
+        # "quantity": 1
+        # }
+        if action == 'add':
+            product_id = data.get('product_id')
+            quantity = data.get('quantity')
+            response = cart.add_product(product_id, quantity, 1, db, conn)
+        # Remove: Remove a product from the cart{
+        # "action": "remove",
+        # "product_id": "123"
+        # }
+        elif action == 'remove':
+            product_id = data.get('product_id')
+            response = cart.remove_product(product_id, 1, db, conn)
+        # Update Quantity: Update the quantity of a product in the cart{
+        # "action": "update_quantity",
+        # "product_id": "123",
+        # "quantity": 2
+        # }
+        elif action == 'update_quantity':
+            product_id = data.get('product_id')
+            quantity = data.get('quantity')
+            response = cart.update_quantity(product_id, quantity, userID, db, conn)
+        # empty: Empty the cart{
+        #   "action": "empty"
+        # }
+        elif action == 'empty':
+            response = cart.empty_cart(userID, db, conn)
+        else:
+            response = "Invalid action"
         
-        try:
-            user_attributes = self.verify_token(access_token, user_pool_id, region)
-            if user_attributes:
-                for attribute in user_attributes:
-                    if attribute['Name'] == 'id_token':
-                        cognito_id_token = attribute['Value']
-                        if id_token == cognito_id_token:
-                            return True
-            return False
-        except Exception as e:
-            print("Token verification failed:", str(e))
-            return False
+        # Return response
+        return json.dumps({'message': response})
+    else:
+        response = "Invalid token"
+        return json.dumps({'message': response})
+            
+@app.route('/checkout', methods=['POST'])
+def getUserCart():
+    data = json.loads(request.data)
+    token = data.get('Token')
+    if VerifyUser.verify_tokens(token):
+        request_message = data.get('message')
+        action = data.get('action')
+        response = None
+        userID = 1
+        # Handle different actions
+        # Add: Add a product to the cart{
+        # "action": "add_shipping_address",
+        # "product_id": "B097JVLW3L",
+        # "quantity": 1
+        # }
+        if action == 'add_shipping_address':
+            response = cart.add_shipping_address(request_message, userID, db)
+        # Handle different actions
+        # Add: Add a product to the cart{
+        # "action": "place_order",
+        # "product:{}",
+        # "discount": 1
+        # }
+        elif action == 'place_order':
+            # Take discount and apply tax and etc.
+            response = cart.place_order(request_message, userID, db)
+        if response:
+            return json.dumps({'message': response})
+        else:
+            response = "None"
+            return json.dumps({'message': response})
+    else:
+        response = "Invalid token"
+        return json.dumps({'message': response})
 
 
-    def verify_token(self, token, user_pool_id, region):
-        client = boto3.client('cognito-idp', region_name=region)
-        try:
-            response = client.get_user(
-                AccessToken=token,
-                UserPoolId=user_pool_id
-            )
-            return response['UserAttributes']  # If token is valid, return the user attributes
-        except ClientError as e:
-            if e.response['Error']['Code'] == 'NotAuthorizedException':
-                print("Token verification failed: Token is not valid.")
-            else:
-                print("Token verification failed:", e.response['Error']['Message'])
-            return None
-        except Exception as e:
-            print("Token verification failed:", str(e))
-            return None
+@app.route('/pay', methods=['POST'])
+def pay():
+    data = json.loads(request.data).get('Token')
+    token = data
+    if VerifyUser.verify_tokens(token):
+        request_message = data.get('message')
+        # response = pay.process_payment(request_message,db)
+        response = True
+        if response:
+            response = "Payment Successful"
+            return json.dumps({'message': response})
+        else:
+            response = "None"
+            return json.dumps({'message': response})
+    else:
+        response = "Invalid token"
+        return json.dumps({'message': response})
 
-def make_app():
-    return tornado.web.Application([
-        (r"/websocket", WebSocketHandler),
-    ])
-
-if __name__ == "__main__":
-    app = make_app()
-    app.listen(8888)
-    print("WebSocket server started at port 8888")
-    tornado.ioloop.IOLoop.current().start()
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8888)

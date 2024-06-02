@@ -7,6 +7,14 @@ class DatabaseManager:
     def __init__(self, config_file):
         self.server, self.database, self.username, self.password, self.driver = self.get_connection_parameters(config_file)
         self.conn, self.cursor = self.connect_to_database()
+        self.drop_tables()
+        self.create_tables()
+        self.insert_categories()
+        self.insert_products()
+        self.insert_product_categories()
+        self.insert_reviews()
+        self.insert_shipping_methods()
+        self.insert_payment_methods()
 
     def get_connection_parameters(self, config_file):
         with open(config_file, 'r') as f:
@@ -23,7 +31,13 @@ class DatabaseManager:
         conn = pyodbc.connect(conn_str)
         cursor = conn.cursor()
         return conn, cursor
+    
+    def get_connection(self):
+        return self.conn
 
+    def get_cursor(self):
+            return self.cursor
+    
     def drop_tables(self):
         drop_queries = [
             'DROP TABLE IF EXISTS PaymentMethods;',
@@ -32,6 +46,8 @@ class DatabaseManager:
             'DROP TABLE IF EXISTS Reviews;',
             'DROP TABLE IF EXISTS OrderItems;',
             'DROP TABLE IF EXISTS Orders;',
+            'DROP TABLE IF EXISTS UserCart;',
+            'DROP TABLE IF EXISTS ShoppingCart;',
             'DROP TABLE IF EXISTS Users;',
             'DROP TABLE IF EXISTS ProductCategories;',
             'DROP TABLE IF EXISTS Products;',
@@ -84,6 +100,22 @@ class DatabaseManager:
                 phone_number NVARCHAR(20),
                 created_at DATETIME
             );''',
+            '''
+            CREATE TABLE UserCart (
+                cart_id INT PRIMARY KEY IDENTITY(1,1),
+                user_id INT,
+                FOREIGN KEY (user_id) REFERENCES Users(user_id),
+            );''',
+            '''
+            CREATE TABLE ShoppingCart (
+                cart_id INT,
+                product_id VARCHAR(20),
+                quantity INT,
+                PRIMARY KEY (cart_id, product_id),  
+                FOREIGN KEY (cart_id) REFERENCES UserCart(cart_id),
+                FOREIGN KEY (product_id) REFERENCES Products(product_id)
+            )
+            ''',
             '''CREATE TABLE Orders (
                 order_id INT IDENTITY(1,1) PRIMARY KEY,
                 user_id INT,
@@ -175,7 +207,7 @@ class DatabaseManager:
                 self.cursor.execute(query, (product_id, product_name, discounted_price, actual_price, discount_percentage, rating, rating_count, 'hello', random.randint(0,20), img_link))
 
     def insert_product_categories(self):
-        with open('amazon.csv', 'r', encoding='utf-8') as file:
+        with open('db/amazon.csv', 'r', encoding='utf-8') as file:
             csv_reader = csv.reader(file)
             next(csv_reader)
             for row in csv_reader:
@@ -188,7 +220,7 @@ class DatabaseManager:
                     self.cursor.execute(query, (product_id, int(cat_id)+1))
 
     def insert_reviews(self):
-        with open('amazon.csv', 'r', encoding='utf-8') as file:
+        with open('db/amazon.csv', 'r', encoding='utf-8') as file:
             csv_reader = csv.reader(file)
             next(csv_reader)
             for row in csv_reader:
@@ -267,14 +299,4 @@ class DatabaseManager:
         self.conn.commit()
         self.conn.close()
 
-    def init(self):
-        self.drop_tables()
-        self.create_tables()
-        self.insert_categories()
-        self.insert_products()
-        self.insert_product_categories()
-        self.insert_reviews()
-        self.insert_shipping_methods()
-        self.insert_payment_methods()
-
-
+    
