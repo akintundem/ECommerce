@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 
 
+
 class Cart:
     def __init__(self):
         pass
@@ -66,47 +67,40 @@ def place_order_query(order,cursor):
 
 def view_cart_query(user_id, cursor):
     try:
-        # Retrieve the cart_id associated with the user
-        cursor.execute("SELECT cart_id FROM UserCart WHERE user_id = ?", (user_id,))
-        cart_id = cursor.fetchone()
-
-        if cart_id is None:
-            # User doesn't have a cart, return an empty list
-            return []
-
-        cart_id = cart_id[0]  # Extract cart_id from the result
-
-        # Retrieve all products in the user's cart
-        cursor.execute("SELECT product_id, quantity FROM ShoppingCart WHERE cart_id = ?", (cart_id,))
+        # Execute the SQL query to retrieve cart items and product details
+        cursor.execute("""
+            SELECT Products.product_name, Products.actual_price, ShoppingCart.quantity 
+            FROM Users
+            INNER JOIN UserCart ON Users.user_id = UserCart.user_id
+            INNER JOIN ShoppingCart ON UserCart.cart_id = ShoppingCart.cart_id
+            INNER JOIN Products ON ShoppingCart.product_id = Products.product_id
+            WHERE Users.user_id = ?
+        """, (user_id,))
+        
+        # Fetch all rows from the result set
         cart_items = cursor.fetchall()
 
         products = []
         for item in cart_items:
-            product_id, quantity = item
-            # Fetch product details based on product_id
-            cursor.execute("SELECT * FROM Products WHERE product_id = ?", (product_id,))
-            product_details = cursor.fetchone()
-            if product_details:
-                product = {
-                    'product_id': product_id,
-                    'product_name': product_details[1],
-                    'discounted_price': float(product_details[2]),
-                    'actual_price': float(product_details[3]),
-                    'discount_percentage': float(product_details[4]),
-                    'rating': float(product_details[5]),
-                    'rating_count': int(product_details[6]),
-                    'about_product': product_details[7],
-                    'number_of_inventory': int(product_details[8]),
-                    'img_link': product_details[9],
-                    'quantity': quantity
-                }
-                products.append(product)
+            product_id, product_name, actual_price, quantity = item
+            
+            # Construct product dictionary
+            product = {
+                'product_name': product_name,
+                'actual_price': float(actual_price),  # Convert to float if needed
+                'quantity': quantity
+            }
+            products.append(product)
 
         return products
+
     except Exception as e:
         # Handle any errors
         print("Error:", e)
         return []
+
+
+
 
 
 

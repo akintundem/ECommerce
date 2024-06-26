@@ -155,6 +155,8 @@ def pay():
     token = data
     if VerifyUser.verify_tokens(token):
         request_message = data.get('message')
+        # Get all information about the cart and cost and pass it to request_message  
+        cart_info = cart.view_cart(1, db)
         response = pay.create_payment_checkout_session(request_message)
         response = True
         if response:
