@@ -1,2 +1,5 @@
 amazon.csv
 Payment/.pay_cred.json
+db/db_cred.json	
+UserAuth/SQLUser.py	
+db/db_cred.json	
