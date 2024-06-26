@@ -116,7 +116,52 @@ Our e-commerce platform aims to revolutionize online shopping by providing a sea
 
 ## Feature 4: Checkout Process
 
+### User Stories
+1. **Add Shipping Address**
+    - As a user, I want to be able to add my shipping address during the checkout process, so I can receive my purchased items at the correct location.
+    - **Acceptance Criteria:**
+        - Users should have the option to enter their shipping address details such as street address, city, state, and zip code.
+        - The entered address should be validated for correctness and completeness.
+        - Users should have the option to save multiple shipping addresses for future use.
+    - **Dev Task:** Implement functionality to add and validate shipping address during the checkout process.
+
+2. **Apply Discount Code**
+    - As a user, I want to be able to apply a discount code to my order during the checkout process, so I can avail any available discounts or promotions.
+    - **Acceptance Criteria:**
+        - Users should have the option to enter a discount code in a designated field.
+        - The entered discount code should be validated and applied to the order if valid.
+        - Users should be able to view the updated total cost of their order after applying the discount.
+    - **Dev Task:** Implement functionality to apply and validate discount codes during the checkout process.
+3. **Place Order**
+    - As a user, I want to be able to place my order securely and receive confirmation of the successful transaction, so I can proceed with confidence.
+    - **Acceptance Criteria:**
+        - Users should have the option to securely submit their order for processing and payment.
+        - The payment process should be secure and encrypted.
+        - Users should receive a confirmation email with the order details and a unique order ID.
+    - **Dev Task:** Implement functionality to securely process and confirm orders, and send confirmation emails to users.
 ## Feature 7: Payment Integration
+### User Stories
+1. **Payment Options**
+    - As a user, I want to be able to choose from multiple payment options during the checkout process, so I can use my preferred method.
+    - **Acceptance Criteria:**
+        - Users should have the option to select from a list of available payment methods such as credit/debit card, PayPal, or other supported options.
+        - Each payment method should have a corresponding form or interface for entering the required payment details.
+        - Users should be able to securely enter and save their payment details for future use.
+    - **Dev Task:** Implement functionality to display and select payment options during the checkout process, and provide interfaces for entering payment details.
+2. **Payment Processing**
+    - As a user, I want the payment process to be smooth and reliable, so I can complete my purchase without any issues.
+    - **Acceptance Criteria:**
+        - Users should be able to securely submit their payment details for processing.
+        - The payment processing should be reliable and handle any errors or exceptions gracefully.
+        - Users should receive immediate feedback on the payment status (success or failure).
+    - **Dev Task:** Implement functionality to securely process payments and provide immediate feedback on the payment status.
+3. **Payment Confirmation**
+    - As a user, I want to receive confirmation of the successful payment and order placement, so I can have peace of mind.
+    - **Acceptance Criteria:**
+        - Users should receive a confirmation page or message indicating the successful payment and order placement.
+        - Users should receive a confirmation email with the order details and a unique order ID.
+    - **Dev Task:** Implement functionality to display payment confirmation and send confirmation emails to users.
+
 
 
 

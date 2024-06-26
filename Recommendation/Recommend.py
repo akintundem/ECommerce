@@ -30,7 +30,7 @@ def get_products_by_categories(categories, cursor):
             WHERE c.name IN ({})
         '''.format(','.join(['?'] * len(categories)))
         cursor.execute(query, categories)
-        rows = cursor.fetchall()
+        rows = cursor.fetchall()[:3]
         products = []
         for row in rows:
             product = {

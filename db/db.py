@@ -32,11 +32,8 @@ class DatabaseManager:
         cursor = conn.cursor()
         return conn, cursor
     
-    def get_connection(self):
-        return self.conn
-
-    def get_cursor(self):
-            return self.cursor
+    def get_connection_cursor(self):
+        return self.conn,self.cursor
     
     def drop_tables(self):
         drop_queries = [
