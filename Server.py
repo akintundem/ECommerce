@@ -3,24 +3,24 @@ from VerifyToken import TokenVerifier
 from Recommendation.Recommend import Recommendation
 from Search.SearchEngine import Search
 from Cart.Cart import Cart
-from Pay import PaymentHandler
+from Payment.Pay import PaymentHandler
 from flask import Flask, request
 from db.db import DatabaseManager
+
 app = Flask(__name__)
 
-
-
 VerifyUser = TokenVerifier("S", "A")
+db_config_file = 'db/db_cred.json' 
+payment_config_file = 'Payment/payment_cred.json'
 
-config_file = 'db/db_cred.json' 
-datab = DatabaseManager(config_file)
-db = datab.get_cursor()
-conn = datab.get_connection()
+
+datab = DatabaseManager(db_config_file)
+conn,db = datab.get_connection_cursor()
 
 recommendation = Recommendation()
 search = Search()
 cart = Cart()
-pay = PaymentHandler()
+pay = PaymentHandler(payment_config_file)
 
 @app.route('/recommend', methods=['GET'])
 def recommend():
@@ -55,7 +55,7 @@ def cartView():
     token = request.headers.get('Token')
     if VerifyUser.verify_tokens(token):
         userID = 1
-        response = cart.view_cart(userID,db)
+        response = cart.view_cart(userID,db,conn)
         if response:
             return json.dumps({'message': response})
         else:
@@ -112,48 +112,33 @@ def cartActions():
     else:
         response = "Invalid token"
         return json.dumps({'message': response})
-
-
-@app.route('/product_detail', methods=['GET'])
-def product():
-    data = json.loads(request.data)
-    token = data.get('Token')
-    if VerifyUser.verify_tokens(token):
-        request_message = data.get('message')
-        response = search.detail_product(request_message,db)
-        if response:
-            return json.dumps({'message': response})
-        else:
-            response = "None"
-            return json.dumps({'message': response})
-    else:
-        response = "Invalid token"
-        return json.dumps({'message': response})
-        
             
-@app.route('/delete_from_cart', methods=['POST'])
-def deleteCart():
-    data = json.loads(request.data)
-    token = data.get('Token')
-    if VerifyUser.verify_tokens(token):
-        request_message = data.get('message')
-        response = cart.remove_product(request_message,db) 
-        if response:
-            return json.dumps({'message': response})
-        else:
-            response = "None"
-            return json.dumps({'message': response})
-    else:
-        response = "Invalid token"
-        return json.dumps({'message': response})
-
 @app.route('/checkout', methods=['POST'])
 def getUserCart():
     data = json.loads(request.data)
     token = data.get('Token')
     if VerifyUser.verify_tokens(token):
         request_message = data.get('message')
-        response = cart.get_user_products(request_message,db)
+        action = data.get('action')
+        response = None
+        userID = 1
+        # Handle different actions
+        # Add: Add a product to the cart{
+        # "action": "add_shipping_address",
+        # "product_id": "B097JVLW3L",
+        # "quantity": 1
+        # }
+        if action == 'add_shipping_address':
+            response = cart.add_shipping_address(request_message, userID, db)
+        # Handle different actions
+        # Add: Add a product to the cart{
+        # "action": "place_order",
+        # "product:{}",
+        # "discount": 1
+        # }
+        elif action == 'place_order':
+            # Take discount and apply tax and etc.
+            response = cart.place_order(request_message, userID, db)
         if response:
             return json.dumps({'message': response})
         else:
@@ -170,8 +155,10 @@ def pay():
     token = data
     if VerifyUser.verify_tokens(token):
         request_message = data.get('message')
-        response = pay.process_payment(request_message,db)
+        response = pay.create_payment_checkout_session(request_message)
+        response = True
         if response:
+            response = "Payment Successful"
             return json.dumps({'message': response})
         else:
             response = "None"
@@ -181,4 +168,4 @@ def pay():
         return json.dumps({'message': response})
 
 if __name__ == '__main__':
-    app.run(port=8888)
+    app.run(host='0.0.0.0', port=8888)

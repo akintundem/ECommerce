@@ -30,14 +30,41 @@ class Cart:
         else:
             return "Unable to empty cart"
     
-    def view_cart(self, user_id, cursor):
-        cart_items = view_cart(user_id, cursor)
+    def view_cart(self, request_message, cursor,conn):
+        cart_items = view_cart_query(request_message, cursor)
         if cart_items:
             return json.dumps(cart_items)
         else:
             return "Cart is empty"
+    
+    def add_shipping_address(self, request_message, cursor,conn):
+        if shipping_query(request_message, cursor, conn):
+            return "Shipping address added"
+        else:
+            return "Unable to add shipping address"
+    def place_order(self, request_message, cursor,conn):
+        if place_order_query(request_message, cursor, conn):
+            return "Order placed"
+        else:
+            return "Unable to place order"
+        
+def shipping_query(shipping_address,cursor):
+    query = '''
+        INSERT INTO ShippingAddress (user_id, shipping_address)
+        VALUES (?, ?)
+    '''
+    cursor.execute(query, (shipping_address['user_id'], shipping_address['shipping_address']))
+    return True
 
-def view_cart(user_id, cursor):
+def place_order_query(order,cursor):
+    query = '''
+        INSERT INTO Orders (user_id, order_date, total_price, shipping_address)
+        VALUES (?, ?, ?, ?)
+    '''
+    cursor.execute(query, (order['user_id'], order['order_date'], order['total_price'], order['shipping_address']))
+    return True
+
+def view_cart_query(user_id, cursor):
     try:
         # Retrieve the cart_id associated with the user
         cursor.execute("SELECT cart_id FROM UserCart WHERE user_id = ?", (user_id,))
