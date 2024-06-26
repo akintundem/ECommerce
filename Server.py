@@ -155,7 +155,7 @@ def pay():
     token = data
     if VerifyUser.verify_tokens(token):
         request_message = data.get('message')
-        response = pay.create_payment_checkout_confirmation(request_message)
+        response = pay.create_payment_checkout_session(request_message)
         response = True
         if response:
             response = "Payment Successful"
