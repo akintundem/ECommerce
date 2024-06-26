@@ -1,0 +1,15 @@
+version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - 5000:5000
+    volumes:
+      - ./app:/app
+  sqledge:
+    image: mcr.microsoft.com/azure-sql-edge 
+    ports:
+    - 1433:1433
+    environment:
+    - SA_PASSWORD=YourStrongPassword
+    - ACCEPT_EULA=Y
