@@ -13,7 +13,7 @@ class PaymentHandler:
                 "transfers": {"requested": True},
             },
         )
-
+sdsd
     def create_payment_checkout_session(self, request_message):
         session = stripe.checkout.Session.create(
             payment_method_types=["card"],
